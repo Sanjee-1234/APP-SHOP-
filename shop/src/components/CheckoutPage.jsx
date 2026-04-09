@@ -31,29 +31,12 @@ function CheckoutPage({ cart, appliedCoupon, setAppliedCoupon, clearCart }) {
     return Object.keys(e).length === 0;
   };
 
- const placeOrder = () => {
-  const orderData = {
-items: cart.map(item => item.name).join(", "),    total: total,
+  const placeOrder = () => {
+    console.log("Order:", cart);
+    clearCart();
+    setAppliedCoupon(null);
+    navigate("/order-success");
   };
-
-  
-  fetch("http://localhost:3000/order", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(orderData),
-  })
-    .then((res) => res.text())
-    .then((data) => {
-      console.log(data);
-
-      clearCart();
-      setAppliedCoupon(null);
-      navigate("/order-success");
-    })
-    .catch((err) => console.log(err));
-};
 
   if (cart.length === 0 && step === 1) {
     return (
