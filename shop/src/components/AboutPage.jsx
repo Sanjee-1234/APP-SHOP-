@@ -38,9 +38,9 @@ function AboutPage() {
         </div>
       </div>
       <div className="about-team">
-        <h2>Meet the Team</h2>
+        <h2>Meet My Team</h2>
         <div className="team-grid">
-          {[{name:"Arun Selvam",role:"Founder & CEO",emoji:"👨‍💼"},{name:"Meera Krishnan",role:"Head of Operations",emoji:"👩‍💼"},{name:"Vijay Raj",role:"Farm Relations Lead",emoji:"👨‍🌾"},{name:"Priya Nair",role:"Customer Experience",emoji:"👩‍💻"}].map(t => (
+          {[{name:"Sanjeev S",role:"Founder & CEO",emoji:"👨‍💼"},{name:"Vignesh Raj M",role:"Head of Operations",emoji:"👨‍💼"},{name:"Likkesh V V",role:"Farm Relations Lead",emoji:"👨‍🌾"},{name:"Vishal T",role:"Customer Experience",emoji:"👩‍💻"}].map(t => (
             <div className="team-card" key={t.name}><div className="team-avatar">{t.emoji}</div><h4>{t.name}</h4><span>{t.role}</span></div>
           ))}
         </div>
