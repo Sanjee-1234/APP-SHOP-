@@ -13,6 +13,8 @@ import OrderSuccess from "./components/OrderSuccess";
 import AboutPage from "./components/AboutPage";
 import SignInPage from "./components/SignInPage";
 
+
+
 export const products = [
   { id: 1,  name: "Basmati Rice",       price: 50,  category: "Grains",     unit: "1 kg",   rating: 4.5, img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&auto=format&fit=crop", desc: "Premium long-grain basmati rice, aged for extra aroma. Perfect for biryani and pulao." },
   { id: 2,  name: "Full Cream Milk",    price: 30,  category: "Dairy",      unit: "500 ml",  rating: 4.8, img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=500&auto=format&fit=crop", desc: "Farm-fresh full cream milk, pasteurized and packed daily for maximum freshness." },
