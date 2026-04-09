@@ -20,7 +20,7 @@ function Footer() {
         <div className="footer-col">
           <h5>Shop</h5>
           <Link to="/">All Products</Link>
-          <Link to="/offers">Offers & Deals</Link>
+          <Link to="/offers">Offers &amp; Deals</Link>
           <Link to="/wishlist">Wishlist</Link>
         </div>
 

@@ -10,36 +10,28 @@ const COUPONS = {
 };
 
 function Cart({ cart, showCart, updateQty, removeFromCart, onClose, appliedCoupon, setAppliedCoupon }) {
-  const navigate   = useNavigate();
+  const navigate = useNavigate();
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
 
   const subtotal  = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const delivery  = subtotal > 0 ? (subtotal >= 499 ? 0 : 30) : 0;
-
   let discount = 0;
   if (appliedCoupon) {
     const c = COUPONS[appliedCoupon.code];
     if (c) discount = c.flat ? Math.min(c.flat, subtotal) : Math.round(subtotal * c.discount);
   }
-
-  const total     = subtotal + delivery - discount;
+  const total    = subtotal + delivery - discount;
   const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
 
   const applyCoupon = () => {
     const code = couponInput.trim().toUpperCase();
     if (COUPONS[code]) {
       setAppliedCoupon({ code, ...COUPONS[code] });
-      setCouponError("");
-      setCouponInput("");
+      setCouponError(""); setCouponInput("");
     } else {
-      setCouponError("Invalid coupon code. Try FRESH20 or SAVE50.");
+      setCouponError("Invalid code. Try FRESH20 or SAVE50.");
     }
-  };
-
-  const handleCheckout = () => {
-    onClose();
-    navigate("/checkout");
   };
 
   return (
@@ -65,12 +57,12 @@ function Cart({ cart, showCart, updateQty, removeFromCart, onClose, appliedCoupo
                 <div className="cart-item-price">₹{item.price} × {item.qty}</div>
               </div>
               <div className="cart-qty-controls">
-                <button className="qty-btn" onClick={() => updateQty(item.id, -1)} aria-label="Decrease">−</button>
+                <button className="qty-btn" onClick={() => updateQty(item.id, -1)}>−</button>
                 <span className="qty-count">{item.qty}</span>
-                <button className="qty-btn" onClick={() => updateQty(item.id, 1)} aria-label="Increase">+</button>
+                <button className="qty-btn" onClick={() => updateQty(item.id, 1)}>+</button>
               </div>
               <div className="cart-item-subtotal">₹{item.price * item.qty}</div>
-              <button className="remove-btn" onClick={() => removeFromCart(item.id)} aria-label={`Remove ${item.name}`}>✕</button>
+              <button className="remove-btn" onClick={() => removeFromCart(item.id)}>✕</button>
             </div>
           ))
         )}
@@ -78,7 +70,6 @@ function Cart({ cart, showCart, updateQty, removeFromCart, onClose, appliedCoupo
 
       {cart.length > 0 && (
         <div className="cart-footer">
-          {/* Coupon */}
           <div className="coupon-wrap">
             {appliedCoupon ? (
               <div className="coupon-applied">
@@ -87,13 +78,9 @@ function Cart({ cart, showCart, updateQty, removeFromCart, onClose, appliedCoupo
               </div>
             ) : (
               <div className="coupon-row">
-                <input
-                  className="coupon-input"
-                  placeholder="Coupon code"
-                  value={couponInput}
+                <input className="coupon-input" placeholder="Coupon code" value={couponInput}
                   onChange={(e) => { setCouponInput(e.target.value); setCouponError(""); }}
-                  onKeyDown={(e) => e.key === "Enter" && applyCoupon()}
-                />
+                  onKeyDown={(e) => e.key === "Enter" && applyCoupon()} />
                 <button className="coupon-btn" onClick={applyCoupon}>Apply</button>
               </div>
             )}
@@ -106,13 +93,9 @@ function Cart({ cart, showCart, updateQty, removeFromCart, onClose, appliedCoupo
             <span>{delivery === 0 ? "Free" : `₹${delivery}`}</span>
           </div>
           {discount > 0 && <div className="cart-summary" style={{ color: "#16a34a" }}><span>Discount</span><span>−₹{discount}</span></div>}
-          {subtotal < 499 && (
-            <div style={{ fontSize: 12, color: "#9a9a9a", marginTop: 6, marginBottom: 4 }}>
-              Add ₹{499 - subtotal} more for free delivery
-            </div>
-          )}
+          {subtotal < 499 && <div style={{ fontSize: 12, color: "#9a9a9a", marginTop: 6 }}>Add ₹{499 - subtotal} more for free delivery</div>}
           <div className="cart-total-row"><span>Total</span><span>₹{total}</span></div>
-          <button className="checkout-btn" onClick={handleCheckout}>Proceed to Checkout →</button>
+          <button className="checkout-btn" onClick={() => { onClose(); navigate("/checkout"); }}>Proceed to Checkout →</button>
         </div>
       )}
     </div>

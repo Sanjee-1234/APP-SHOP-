@@ -1,8 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function Navbar({ setSearch, cartCount, toggleCart, wishlistCount }) {
-  const navigate = useNavigate();
-
+function Navbar({ setSearch, cartCount, toggleCart, wishlistCount, user, onSignOut }) {
   return (
     <nav className="navbar">
       <Link className="navbar-logo" to="/">
@@ -20,13 +18,23 @@ function Navbar({ setSearch, cartCount, toggleCart, wishlistCount }) {
       </div>
 
       <div className="navbar-links">
-        <Link to="/offers" className="navbar-link">🎁 Offers</Link>
-        <Link to="/about"  className="navbar-link">About</Link>
+        <Link to="/offers"   className="navbar-link">🎁 Offers</Link>
+        <Link to="/about"    className="navbar-link">About</Link>
         <Link to="/wishlist" className="navbar-link wishlist-link">
           ♥ Wishlist
           {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
         </Link>
       </div>
+
+      {user ? (
+        <div className="navbar-user">
+          <div className="navbar-avatar">{user.name[0].toUpperCase()}</div>
+          <span className="navbar-username">{user.name.split(" ")[0]}</span>
+          <button className="navbar-signout" onClick={onSignOut}>Sign out</button>
+        </div>
+      ) : (
+        <Link to="/signin" className="navbar-signin-btn">Sign In</Link>
+      )}
 
       <button className="navbar-cart-btn" onClick={toggleCart}>
         🛒 Cart

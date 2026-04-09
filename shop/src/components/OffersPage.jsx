@@ -4,20 +4,16 @@ function OffersPage({ offers, products, addToCart, toggleWishlist, isWishlisted 
   return (
     <div className="offers-page">
       <div className="offers-hero">
-        <div className="offers-hero-tag">🎁 Limited Time</div>
+        <div className="hero-tag">🎁 Limited Time</div>
         <h1>Today's <span>Best Deals</span></h1>
         <p>Exclusive offers on your favourite groceries. Save more every day!</p>
       </div>
-
-      {/* Offer Cards */}
       <div className="offers-grid">
         {offers.map((offer) => (
           <div className="offer-card" key={offer.id} style={{ "--offer-color": offer.color }}>
             <div className="offer-card-top">
               <div className="offer-discount-badge">{offer.discount}% OFF</div>
-              <div className="offer-code-chip">
-                <span>Code:</span> <strong>{offer.code}</strong>
-              </div>
+              <div className="offer-code-chip"><span>Code:</span> <strong>{offer.code}</strong></div>
             </div>
             <h3>{offer.title}</h3>
             <p>{offer.desc}</p>
@@ -26,8 +22,6 @@ function OffersPage({ offers, products, addToCart, toggleWishlist, isWishlisted 
           </div>
         ))}
       </div>
-
-      {/* Offer Products by category */}
       {offers.map((offer) => {
         const offerProducts = products.filter((p) => p.category === offer.category);
         return (

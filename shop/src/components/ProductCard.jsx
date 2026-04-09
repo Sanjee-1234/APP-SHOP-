@@ -22,21 +22,14 @@ function ProductCard({ product, addToCart, toggleWishlist, isWishlisted }) {
           <span className="card-unit">{product.unit}</span>
           <span className="card-rating">★ {product.rating}</span>
         </div>
-
         <h3>{product.name}</h3>
-
         <div className="card-footer">
-          <div className="card-price">
-            ₹{product.price}
-            <span>/ {product.unit}</span>
-          </div>
+          <div className="card-price">₹{product.price}<span>/ {product.unit}</span></div>
           <button
             className="add-btn"
             title={`Add ${product.name} to cart`}
             onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-          >
-            +
-          </button>
+          >+</button>
         </div>
       </div>
     </div>
