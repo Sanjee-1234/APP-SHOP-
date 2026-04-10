@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Navbar({ setSearch, cartCount, toggleCart, wishlistCount, user, onSignOut }) {
+function Navbar({ setSearch, cartCount, toggleCart, wishlistCount, ordersCount, user, onSignOut }) {
   return (
     <nav className="navbar">
       <Link className="navbar-logo" to="/">
@@ -19,6 +19,10 @@ function Navbar({ setSearch, cartCount, toggleCart, wishlistCount, user, onSignO
 
       <div className="navbar-links">
         <Link to="/offers"   className="navbar-link">🎁 Offers</Link>
+        <Link to="/orders"   className="navbar-link orders-link">
+          📦 Orders
+          {ordersCount > 0 && <span className="orders-nav-badge">{ordersCount}</span>}
+        </Link>
         <Link to="/about"    className="navbar-link">About</Link>
         <Link to="/wishlist" className="navbar-link wishlist-link">
           ♥ Wishlist

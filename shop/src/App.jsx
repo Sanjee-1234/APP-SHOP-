@@ -9,11 +9,10 @@ import ProductPage from "./components/ProductPage";
 import OffersPage from "./components/OffersPage";
 import WishlistPage from "./components/WishlistPage";
 import CheckoutPage from "./components/CheckoutPage";
-import OrderSuccess from "./components/OrderSuccess";
+import OrdersPage from "./components/OrdersPage";
 import AboutPage from "./components/AboutPage";
 import SignInPage from "./components/SignInPage";
 
-// ── All images use stable, verified Unsplash photo IDs ──
 export const products = [
   // Vegetables
   { id: 1,  name: "Tomato",             price: 40,  category: "Vegetables", unit: "500 g",   rating: 4.3, img: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=500&auto=format&fit=crop&q=80", desc: "Vine-ripened farm tomatoes bursting with flavour. Great for curries, salads, and soups." },
@@ -75,6 +74,7 @@ export const OFFERS = [
 function App() {
   const [cart, setCart]                     = useState([]);
   const [wishlist, setWishlist]             = useState([]);
+  const [orders, setOrders]                 = useState([]); // All placed orders
   const [search, setSearch]                 = useState("");
   const [showCart, setShowCart]             = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -119,7 +119,19 @@ function App() {
 
   const isWishlisted = useCallback((id) => wishlist.some((p) => p.id === id), [wishlist]);
 
-  const clearCart = useCallback(() => setCart([]), []);
+  // Called by CheckoutPage when order is placed — saves full order snapshot
+  const placeOrder = useCallback((orderData) => {
+    const newOrder = {
+      id: "FM" + Math.floor(100000 + Math.random() * 900000),
+      placedAt: Date.now(),
+      items: [...cart],
+      ...orderData,
+    };
+    setOrders((prev) => [newOrder, ...prev]);
+    setCart([]);
+    setAppliedCoupon(null);
+    return newOrder.id;
+  }, [cart]);
 
   const filtered = products
     .filter((p) => {
@@ -144,6 +156,10 @@ function App() {
         cartCount={totalItems}
         toggleCart={() => setShowCart((v) => !v)}
         wishlistCount={wishlist.length}
+        ordersCount={orders.filter(o => {
+          const elapsed = Date.now() - o.placedAt;
+          return elapsed < 6 * 60 * 60 * 1000; // active = less than 6h old
+        }).length}
         user={user}
         onSignOut={() => setUser(null)}
       />
@@ -222,10 +238,10 @@ function App() {
               <p className="why-subtitle">We bring the farm to your doorstep — fresh, fast, and reliable.</p>
               <div className="why-grid">
                 {[
-                  { icon: "🌾", title: "Farm Direct",       desc: "Products sourced directly from 200+ trusted local farms across India." },
-                  { icon: "❄️", title: "Cold-Chain Delivery",desc: "Temperature-controlled supply chain ensures maximum freshness." },
-                  { icon: "📦", title: "Same-Day Delivery",  desc: "Order before 11am and get your groceries delivered by evening." },
-                  { icon: "💚", title: "No Chemicals",       desc: "Strictly no artificial ripening, pesticides, or chemical additives." },
+                  { icon: "🌾", title: "Farm Direct",        desc: "Products sourced directly from 200+ trusted local farms across India." },
+                  { icon: "❄️", title: "Cold-Chain Delivery", desc: "Temperature-controlled supply chain ensures maximum freshness." },
+                  { icon: "📦", title: "Same-Day Delivery",   desc: "Order before 11am and get your groceries delivered by evening." },
+                  { icon: "💚", title: "No Chemicals",        desc: "Strictly no artificial ripening, pesticides, or chemical additives." },
                 ].map(w => (
                   <div className="why-card" key={w.title}>
                     <div className="why-icon">{w.icon}</div>
@@ -241,8 +257,8 @@ function App() {
         <Route path="/product/:id"   element={<ProductPage products={products} addToCart={addToCart} toggleWishlist={toggleWishlist} isWishlisted={isWishlisted} />} />
         <Route path="/offers"        element={<OffersPage offers={OFFERS} products={products} addToCart={addToCart} toggleWishlist={toggleWishlist} isWishlisted={isWishlisted} />} />
         <Route path="/wishlist"      element={<WishlistPage wishlist={wishlist} addToCart={addToCart} toggleWishlist={toggleWishlist} />} />
-        <Route path="/checkout"      element={<CheckoutPage cart={cart} appliedCoupon={appliedCoupon} setAppliedCoupon={setAppliedCoupon} clearCart={clearCart} />} />
-        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/checkout"      element={<CheckoutPage cart={cart} appliedCoupon={appliedCoupon} setAppliedCoupon={setAppliedCoupon} placeOrder={placeOrder} />} />
+        <Route path="/orders"        element={<OrdersPage orders={orders} />} />
         <Route path="/about"         element={<AboutPage />} />
         <Route path="/signin"        element={<SignInPage onSignIn={setUser} />} />
       </Routes>
