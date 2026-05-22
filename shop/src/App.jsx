@@ -12,6 +12,7 @@ import CheckoutPage from "./components/CheckoutPage";
 import OrdersPage from "./components/OrdersPage";
 import AboutPage from "./components/AboutPage";
 import SignInPage from "./components/SignInPage";
+import AdminPage from "./components/AdminPage";
 
 export const products = [
   // Vegetables
@@ -130,9 +131,11 @@ function App() {
   const handleSignIn = useCallback((userInfo) => {
     setUser(userInfo);
     saveSession(userInfo);
-    const saved = loadAccount(userInfo.email);
-    setOrders(saved.orders);
-    setWishlist(saved.wishlist);
+    if (!userInfo.isAdmin) {
+      const saved = loadAccount(userInfo.email);
+      setOrders(saved.orders);
+      setWishlist(saved.wishlist);
+    }
   }, []);
 
   // ── Sign out: save data then clear state ──
@@ -187,6 +190,12 @@ function App() {
       ...orderData,
     };
     setOrders((prev) => [newOrder, ...prev]);
+    // Also push to global orders store so admin dashboard can read across accounts
+    try {
+      const raw = localStorage.getItem("fm_global_orders");
+      const global = raw ? JSON.parse(raw) : [];
+      localStorage.setItem("fm_global_orders", JSON.stringify([newOrder, ...global]));
+    } catch {}
     setCart([]);
     setAppliedCoupon(null);
   }, [cart]);
@@ -207,6 +216,16 @@ function App() {
 
   const totalItems = cart.reduce((s, i) => s + i.qty, 0);
   const activeOrdersCount = orders.filter(o => Date.now() - o.placedAt < 6 * 60 * 60 * 1000).length;
+
+  // ── Auth gate: show sign-in if no user ──
+  if (!user) {
+    return <SignInPage onSignIn={handleSignIn} />;
+  }
+
+  // ── Admin gate ──
+  if (user.isAdmin) {
+    return <AdminPage orders={orders} onBack={handleSignOut} />;
+  }
 
   return (
     <>
